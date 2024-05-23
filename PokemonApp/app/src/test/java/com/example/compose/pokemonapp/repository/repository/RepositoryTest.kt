@@ -37,39 +37,51 @@ class RepositoryTest {
     @Test
     fun getPokemonObject_successfulResponse_returnCorrectList() = runBlocking {
         val expectedInitialList: List<Pokemon> = listOf(
-            Pokemon(null,null,null,null,null,"Bulbasaur",null, Sprites(null),null)
+            Pokemon(null,null,null,null,null,"beedrill",null, Sprites(null),null)
         )
 
         val expectedPokemonList: List<Pokemon> = listOf(
-            Pokemon(1, 64, 7, true,"https://pokeapi.co/api/v2/pokemon/1/encounters", "bulbasaur", 1, Sprites("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"), 69)
+            Pokemon(15, 178, 10, true, "https://pokeapi.co/api/v2/pokemon/15/encounters", "beedrill", 19, Sprites("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/15.png"), 295),
         )
 
         val expectedAreEncounters = AreaEncounters().apply {
-            add(AreaEncountersItem(LocationArea("cerulean-city-area", "https://pokeapi.co/api/v2/location-area/281/")))
-            add(AreaEncountersItem(LocationArea("pallet-town-area", "https://pokeapi.co/api/v2/location-area/285/")))
-            add(AreaEncountersItem(LocationArea("lumiose-city-area", "https://pokeapi.co/api/v2/location-area/779/")))
-            add(AreaEncountersItem(LocationArea("alola-route-2-main", "https://pokeapi.co/api/v2/location-area/1040/")))
+            add(AreaEncountersItem(LocationArea("ilex-forest-area", "https://pokeapi.co/api/v2/location-area/204/")))
+            add(AreaEncountersItem(LocationArea("johto-route-34-area", "https://pokeapi.co/api/v2/location-area/205/")))
+            add(AreaEncountersItem(LocationArea("johto-route-35-area", "https://pokeapi.co/api/v2/location-area/206/")))
+            add(AreaEncountersItem(LocationArea("johto-route-36-area", "https://pokeapi.co/api/v2/location-area/209/")))
+            add(AreaEncountersItem(LocationArea("johto-route-37-area", "https://pokeapi.co/api/v2/location-area/210/")))
+            add(AreaEncountersItem(LocationArea("johto-route-38-area", "https://pokeapi.co/api/v2/location-area/222/")))
+            add(AreaEncountersItem(LocationArea("johto-route-39-area", "https://pokeapi.co/api/v2/location-area/223/")))
+            add(AreaEncountersItem(LocationArea("lake-of-rage-area", "https://pokeapi.co/api/v2/location-area/242/")))
+            add(AreaEncountersItem(LocationArea("kanto-route-26-area", "https://pokeapi.co/api/v2/location-area/287/")))
+            add(AreaEncountersItem(LocationArea("kanto-route-27-area", "https://pokeapi.co/api/v2/location-area/288/")))
+            add(AreaEncountersItem(LocationArea("kanto-route-2-south-towards-viridian-city", "https://pokeapi.co/api/v2/location-area/296/")))
+            add(AreaEncountersItem(LocationArea("kanto-route-2-north-towards-pewter-city", "https://pokeapi.co/api/v2/location-area/320/")))
+            add(AreaEncountersItem(LocationArea("viridian-forest-area", "https://pokeapi.co/api/v2/location-area/321/")))
+            add(AreaEncountersItem(LocationArea("unova-route-12-area", "https://pokeapi.co/api/v2/location-area/646/")))
+            add(AreaEncountersItem(LocationArea("azalea-town-area", "https://pokeapi.co/api/v2/location-area/798/")))
+            add(AreaEncountersItem(LocationArea("alola-route-4-area", "https://pokeapi.co/api/v2/location-area/1046/")))
         }
 
         val expectedLocations = expectedAreEncounters.map { it.locationArea.name }
 
-        val expectedList: List<PokemonModel> = listOf(
-            PokemonModel(1,64,7,true, listOf("Cerulean city area", "Pallet town area", "Lumiose city area"),"Bulbasaur",1,
-                Sprites("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"),69))
+        val expectedPokemon = PokemonModel(15, 178, 10, true, listOf("Ilex forest area", "Johto route 34 area", "Johto route 35 area"), "Beedrill", 19,
+            Sprites("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/15.png"), 295)
 
         coEvery { restService.getPokemonList() } returns Response.success(PokemonList(null, null, null, expectedInitialList))
         val names = expectedInitialList.map { it.name }.filterNotNull()
         expectedPokemonList.forEach {pokemon ->
             names.map { coEvery { restService.getPokemon(it) } returns Response.success(pokemon) }
         }
-        coEvery { restService.getLocationAreaEncounters(1) } returns Response.success(expectedAreEncounters)
+        coEvery { restService.getLocationAreaEncounters(15) } returns Response.success(expectedAreEncounters)
 
         val pokemon = expectedPokemonList.first()
         val newName = pokemon.name!!.replaceFirstChar { it.uppercase() }
-        val model = PokemonModel(1,pokemon.baseExperience!!, pokemon.height!!, pokemon.isDefault!!, repository.createLocationsListWithSizeBounded(expectedLocations), newName, pokemon.order!!, pokemon.sprites!!, pokemon.weight!!)
+        val model = PokemonModel(15,pokemon.baseExperience!!, pokemon.height!!, pokemon.isDefault!!, repository.createLocationsListWithSizeBounded(expectedLocations), newName, pokemon.order!!, pokemon.sprites!!, pokemon.weight!!)
 
         val result = repository.getPokemonList()
-        assertEquals(model, expectedList.first())
+
+        assertEquals(model, expectedPokemon)
         Truth.assertThat(result.first()).isEqualTo(model)
     }
 
@@ -114,7 +126,7 @@ class RepositoryTest {
             Pokemon(12, 198, 11, true, "https://pokeapi.co/api/v2/pokemon/12/encounters", "butterfree", 16, Sprites("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/12.png"), 320),
             Pokemon(13, 39, 3, true, "https://pokeapi.co/api/v2/pokemon/13/encounters", "weedle", 17, Sprites("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"), 32),
             Pokemon(14, 72, 6, true, "https://pokeapi.co/api/v2/pokemon/14/encounters", "kakuna", 18, Sprites("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/14.png"), 100),
-            Pokemon(15, 178, 10, true, "https://pokeapi.co/api/v2/pokemon/15/encounters", "beedrill", 9, Sprites("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/15.png"), 295),
+            Pokemon(15, 178, 10, true, "https://pokeapi.co/api/v2/pokemon/15/encounters", "beedrill", 19, Sprites("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/15.png"), 295),
             Pokemon(16, 50, 3, true, "https://pokeapi.co/api/v2/pokemon/16/encounters", "pidgey", 21, Sprites("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/16.png"), 18),
             Pokemon(17, 122, 11, true, "https://pokeapi.co/api/v2/pokemon/17/encounters", "pidgeotto", 22, Sprites("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/17.png"), 300),
             Pokemon(18, 216, 15, true, "https://pokeapi.co/api/v2/pokemon/18/encounters", "pidgeot", 23, Sprites("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/18.png"), 395),
@@ -549,8 +561,8 @@ class RepositoryTest {
 
         val result = repository.getPokemonList()
 
-        assertEquals(modelsList, expectedList)
-        //Truth.assertThat(result).isEqualTo(modelsList)
+        Truth.assertThat(modelsList).isEqualTo(expectedList)
+        Truth.assertThat(result).isEqualTo(modelsList)
     }
 
     @Test
