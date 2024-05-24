@@ -14,6 +14,9 @@ import com.google.common.truth.Truth
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.ResponseBody
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -568,6 +571,22 @@ class RepositoryTest {
     @Test
     fun getInitialListTest_successfulResponse_emptyList_returnEmptyList() = runBlocking {
         coEvery { restService.getPokemonList() } returns Response.success(PokemonList(null, null, null, emptyList()))
+
+        val result = repository.getInitialList()
+
+        Truth.assertThat(result).isEqualTo(emptyList<PokemonList>())
+    }
+
+    @Test
+    fun getInitialListTest_errorResponse_emptyList_returnEmptyList() = runBlocking {
+        val errorResponse = Response.error<PokemonList>(
+            404,
+            ResponseBody.create(
+                "application/json".toMediaTypeOrNull(),
+                "{\"error\": \"Not found\"}"
+            ))
+
+        coEvery { restService.getPokemonList() } returns errorResponse
 
         val result = repository.getInitialList()
 
