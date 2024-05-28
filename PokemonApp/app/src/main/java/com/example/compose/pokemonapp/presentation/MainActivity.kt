@@ -5,8 +5,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,6 +21,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -31,6 +35,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -44,6 +49,7 @@ import com.example.compose.pokemonapp.domain.model.PokemonModel
 import com.example.compose.pokemonapp.presentation.viewmodel.PokemonViewModel
 import com.example.compose.pokemonapp.presentation.viewmodel.PokemonViewModelFactory
 import com.example.compose.pokemonapp.presentation.theme.PokemonAppTheme
+import com.example.compose.pokemonapp.presentation.viewmodel.PokemonUiState
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -72,16 +78,39 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun PokemonApp(factory: PokemonViewModelFactory, modifier: Modifier = Modifier, viewModel: PokemonViewModel = viewModel(factory = factory), onClick: (PokemonModel) -> Unit) {
-    val pokemonList = viewModel.getPokemonList().collectAsState(initial = emptyList())
-
     Scaffold(
         topBar = { PokemonTopBar() },
-        modifier = modifier
+        modifier = modifier.fillMaxSize()
     ) {values ->
-        LazyColumn(contentPadding = values) {
-            items(pokemonList.value) {
-                PokemonItem(pokemon = it, onclick = onClick, modifier = Modifier.padding(8.dp))
-            }
+        Surface(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            HomeScreen(
+                pokemonUiState = viewModel.pokemonUiState,
+                contentPadding = values,
+                onClick = onClick,
+                retry = viewModel::getPokemonList
+            )
+        }
+    }
+}
+
+@Composable
+fun HomeScreen(pokemonUiState: PokemonUiState, onClick: (PokemonModel) -> Unit, retry: () -> Unit, contentPadding: PaddingValues = PaddingValues(0.dp),
+               modifier: Modifier = Modifier) {
+    when (pokemonUiState) {
+        is PokemonUiState.Loading -> LoadingScreen(modifier = modifier.fillMaxSize())
+        is PokemonUiState.Success -> PokemonList(pokemonList = pokemonUiState.pokemonList, onClick = onClick, contentPadding = contentPadding)
+        is PokemonUiState.Error -> ErrorScreen(retry = retry, modifier = modifier.fillMaxSize())
+    }
+}
+
+@Composable
+fun PokemonList(pokemonList: List<PokemonModel>, contentPadding: PaddingValues = PaddingValues(0.dp), onClick: (PokemonModel) -> Unit,
+                modifier: Modifier = Modifier) {
+    LazyColumn(contentPadding = contentPadding) {
+        items(pokemonList) {
+            PokemonItem(pokemon = it, onclick = onClick, modifier = modifier.padding(8.dp))
         }
     }
 }
@@ -94,7 +123,9 @@ fun PokemonItem(pokemon: PokemonModel, onclick: (PokemonModel) -> Unit, modifier
             .data(pokemon.sprites.frontDefault)
             .scale(Scale.FILL)
             .size(coil.size.Size.ORIGINAL)
-            .build()
+            .build(),
+        error = painterResource(R.drawable.ic_broken_image),
+        placeholder = painterResource(R.drawable.loading_img)
     )
 
     Card(
@@ -127,6 +158,33 @@ fun PokemonItem(pokemon: PokemonModel, onclick: (PokemonModel) -> Unit, modifier
     }
 }
 
+
+@Composable
+fun ErrorScreen(retry: () -> Unit, modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.ic_connection_error),
+            contentDescription = stringResource(R.string.connection_error)
+        )
+        Text(text = stringResource(R.string.loading_failed), modifier = Modifier.padding(16.dp))
+        Button(onClick = retry) {
+            Text(stringResource(R.string.retry))
+        }
+    }
+}
+
+@Composable
+fun LoadingScreen(modifier: Modifier = Modifier) {
+    Image(
+        modifier = modifier.size(200.dp),
+        painter = painterResource(R.drawable.loading_img),
+        contentDescription = stringResource(R.string.loading)
+    )
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

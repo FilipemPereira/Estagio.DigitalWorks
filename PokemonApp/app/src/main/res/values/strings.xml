@@ -2,4 +2,8 @@
     <string name="app_name">PokemonApp</string>
     <string name="title_activity_main">Pokemon</string>
     <string name="title_activity_details">Pokemon Details</string>
+    <string name="loading">loading</string>
+    <string name="loading_failed">Loading failed</string>
+    <string name="retry">Retry Connection</string>
+    <string name="connection_error">connection error</string>
 </resources>
