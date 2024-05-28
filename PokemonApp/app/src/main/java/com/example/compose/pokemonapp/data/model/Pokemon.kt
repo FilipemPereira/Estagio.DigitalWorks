@@ -3,6 +3,9 @@ package com.example.compose.pokemonapp.data.model
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
+/**
+ * Class that represents the pokemon that fetch from the api
+ */
 data class Pokemon(
     @SerializedName("id")
     val id: Int?,

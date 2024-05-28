@@ -53,6 +53,9 @@ import com.example.compose.pokemonapp.presentation.viewmodel.PokemonUiState
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+/**
+ * Main view in the android app. Send a pokemonModel object for the detailsActivity as argument of a Intent
+ */
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @Inject
@@ -76,6 +79,9 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+/**
+ * Display the PokemonApp
+ */
 @Composable
 fun PokemonApp(factory: PokemonViewModelFactory, modifier: Modifier = Modifier, viewModel: PokemonViewModel = viewModel(factory = factory), onClick: (PokemonModel) -> Unit) {
     Scaffold(
@@ -95,6 +101,9 @@ fun PokemonApp(factory: PokemonViewModelFactory, modifier: Modifier = Modifier, 
     }
 }
 
+/**
+ * Display the HomeScreen according to the uiState for the homeScreen
+ */
 @Composable
 fun HomeScreen(pokemonUiState: PokemonUiState, onClick: (PokemonModel) -> Unit, retry: () -> Unit, contentPadding: PaddingValues = PaddingValues(0.dp),
                modifier: Modifier = Modifier) {
@@ -105,6 +114,9 @@ fun HomeScreen(pokemonUiState: PokemonUiState, onClick: (PokemonModel) -> Unit, 
     }
 }
 
+/**
+ * Display the list of pokemons
+ */
 @Composable
 fun PokemonList(pokemonList: List<PokemonModel>, contentPadding: PaddingValues = PaddingValues(0.dp), onClick: (PokemonModel) -> Unit,
                 modifier: Modifier = Modifier) {
@@ -115,8 +127,13 @@ fun PokemonList(pokemonList: List<PokemonModel>, contentPadding: PaddingValues =
     }
 }
 
+/**
+ * Display a items of the list of pokemons
+ */
 @Composable
 fun PokemonItem(pokemon: PokemonModel, onclick: (PokemonModel) -> Unit, modifier: Modifier = Modifier) {
+    // fetch the image from the api
+    // this fetch handles with the error situations
     val painter = rememberAsyncImagePainter(
         model = ImageRequest
             .Builder(LocalContext.current)
@@ -158,7 +175,9 @@ fun PokemonItem(pokemon: PokemonModel, onclick: (PokemonModel) -> Unit, modifier
     }
 }
 
-
+/**
+ * Display the main view if exists a error with the request
+ */
 @Composable
 fun ErrorScreen(retry: () -> Unit, modifier: Modifier = Modifier) {
     Column(
@@ -177,6 +196,10 @@ fun ErrorScreen(retry: () -> Unit, modifier: Modifier = Modifier) {
     }
 }
 
+
+/**
+ * Display the main view while the request is processing
+ */
 @Composable
 fun LoadingScreen(modifier: Modifier = Modifier) {
     Image(
@@ -186,6 +209,9 @@ fun LoadingScreen(modifier: Modifier = Modifier) {
     )
 }
 
+/**
+ *Display the Top Bar of the Pokemon app
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PokemonTopBar(modifier: Modifier = Modifier) {

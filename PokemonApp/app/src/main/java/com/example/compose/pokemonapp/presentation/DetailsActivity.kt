@@ -36,6 +36,9 @@ import coil.size.Scale
 import com.example.compose.pokemonapp.domain.model.PokemonModel
 import java.io.Serializable
 
+/**
+ * Second view in the android app. Receives a pokemonModel object passed as argument of a Intent
+ */
 class DetailsActivity : ComponentActivity() {
     companion object {
         private const val pokemonId = "pokemon"
@@ -58,6 +61,9 @@ class DetailsActivity : ComponentActivity() {
     }
 }
 
+/**
+ * showPokemonDetails show the second view
+ */
 @Composable
 fun ShowPokemonDetails(pokemon: PokemonModel, modifier: Modifier = Modifier) {
     Column(
@@ -71,6 +77,9 @@ fun ShowPokemonDetails(pokemon: PokemonModel, modifier: Modifier = Modifier) {
     }
 }
 
+/**
+ * showTopDetailsView display the pokemon image and the pokemon name
+ */
 @Composable
 fun ShowTopDetailsView(pokemon: PokemonModel, modifier: Modifier = Modifier) {
     val painter = rememberAsyncImagePainter(
@@ -105,7 +114,9 @@ fun ShowTopDetailsView(pokemon: PokemonModel, modifier: Modifier = Modifier) {
     }
 }
 
-
+/**
+ * showDetailsList display the list of characteristics of the pokemon passed in the Intent
+ */
 @Composable
 fun ShowDetailsList(pokemon: PokemonModel, modifier: Modifier = Modifier) {
     val isDefault = if (pokemon.isDefault) "Yes" else "No"
@@ -121,6 +132,9 @@ fun ShowDetailsList(pokemon: PokemonModel, modifier: Modifier = Modifier) {
     )
 }
 
+/**
+ * showPokemonCharacteristic display the trivial characteristics of the pokemon
+ */
 @Composable
 fun ShowPokemonCharacteristics(pokemon: PokemonModel, isDefault: String, modifier: Modifier = Modifier) {
     Text(
@@ -224,6 +238,9 @@ fun ShowPokemonCharacteristics(pokemon: PokemonModel, isDefault: String, modifie
     }
 }
 
+/**
+ * showPokemonCharacteristic display the list of locations of the pokemon
+ */
 @Composable
 fun ShowPokemonLocationsList(pokemon: PokemonModel, modifier: Modifier = Modifier) {
     Text(

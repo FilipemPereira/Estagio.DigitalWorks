@@ -14,6 +14,9 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
+/**
+ * Object that provides all the dependencies needed for the application
+ */
 object AppModule {
     @Singleton
     @Provides

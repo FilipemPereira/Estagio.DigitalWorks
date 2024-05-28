@@ -3,6 +3,9 @@ package com.example.compose.pokemonapp.domain.model
 import com.example.compose.pokemonapp.data.model.Sprites
 import java.io.Serializable
 
+/**
+ * Class that represents the pokemon that is uses in the Ui of the application
+ */
 data class PokemonModel(
     val id: Int,
     val baseExperience: Int,

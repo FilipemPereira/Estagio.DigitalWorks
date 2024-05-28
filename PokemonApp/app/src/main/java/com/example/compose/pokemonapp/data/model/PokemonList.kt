@@ -1,8 +1,10 @@
 package com.example.compose.pokemonapp.data.model
 
-import com.example.compose.pokemonapp.data.model.Pokemon
 import com.google.gson.annotations.SerializedName
 
+/**
+ * Class that represents the initial object that have to be fetched from the api
+ */
 data class PokemonList(
     @SerializedName("count")
     val count: Int?,
