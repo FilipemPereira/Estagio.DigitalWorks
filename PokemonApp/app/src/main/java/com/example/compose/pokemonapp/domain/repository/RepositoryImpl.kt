@@ -1,10 +1,7 @@
 package com.example.compose.pokemonapp.domain.repository
 
 import android.util.Log
-import androidx.annotation.VisibleForTesting
 import com.example.compose.pokemonapp.data.PokemonService
-import com.example.compose.pokemonapp.data.model.AreaEncounters
-import com.example.compose.pokemonapp.data.model.LocationArea
 import com.example.compose.pokemonapp.data.model.Pokemon
 import com.example.compose.pokemonapp.domain.model.PokemonModel
 import javax.inject.Inject

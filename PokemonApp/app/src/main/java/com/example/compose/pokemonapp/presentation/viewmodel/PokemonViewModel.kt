@@ -6,9 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.compose.pokemonapp.domain.model.PokemonModel
-import com.example.compose.pokemonapp.domain.repository.Repository
 import com.example.compose.pokemonapp.domain.repository.RepositoryImpl
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 
 /**
